@@ -22,8 +22,8 @@ public class TerminalParser {
 
     public Terminal[] parseString(String string) throws ParseException {
         String[] words = Arrays.stream(string
-                .replace("(", "( ")
-                .replace(")", ") ")
+                .replace("(", " ( ")
+                .replace(")", " ) ")
                 .split(" "))
                 .filter(s -> !s.isEmpty())
                 .toArray(String[]::new);

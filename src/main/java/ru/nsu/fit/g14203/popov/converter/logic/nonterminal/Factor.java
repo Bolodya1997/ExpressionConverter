@@ -1,4 +1,4 @@
-package ru.nsu.fit.g14203.popov.converter.logic;
+package ru.nsu.fit.g14203.popov.converter.logic.nonterminal;
 
 import ru.nsu.fit.g14203.popov.converter.logic.terminal.Not;
 import ru.nsu.fit.g14203.popov.parse.types.NonTerminalType;

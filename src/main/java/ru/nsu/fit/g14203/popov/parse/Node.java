@@ -12,6 +12,7 @@ public class Node {
     private Type type;
     private Terminal terminal;
 
+    private Node parent;
     private List<Node> children = new ArrayList<>();
 
     public Node(Type type) {
@@ -27,8 +28,20 @@ public class Node {
         return type;
     }
 
+    public Node getParent() {
+        return parent;
+    }
+
+    public void setParent(Node parent) {
+        this.parent = parent;
+    }
+
     public List<Node> getChildren() {
         return children;
+    }
+
+    public void setChildren(List<Node> children) {
+        this.children = children;
     }
 
     @Override
@@ -38,6 +51,6 @@ public class Node {
 
         return children.stream()
                 .map(Object::toString)
-                .collect(Collectors.joining("  "));
+                .collect(Collectors.joining(" "));
     }
 }

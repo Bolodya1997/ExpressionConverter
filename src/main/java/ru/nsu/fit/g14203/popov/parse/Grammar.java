@@ -17,7 +17,7 @@ public class Grammar {
 
     /**
      * For every class extends NonTerminalType replace every its instance in NonTerminalType::rules
-     * with single one
+     * with single one.
      *
      * @param nonTerminals      list of non-terminals
      * @return                  new list
@@ -52,7 +52,7 @@ public class Grammar {
     }
 
     /**
-     * Creates context free grammar by list of rules and start non-terminal
+     * Creates context free grammar by list of rules and start non-terminal.
      *
      * @param nonTerminals      list of rules
      * @param start             start non-terminal
@@ -75,10 +75,10 @@ public class Grammar {
 
     /**
      * Performs normalization into Chomsky normal form in 4 steps:
-     *      1.  Add a new start non-terminal
-     *      2.  Remove the long rules
-     *      3.  Remove the (A -> bc, A -> bC, A -> Bc) rules
-     *      4.  Remove the unit rules
+     *      1.  add a new start non-terminal;
+     *      2.  remove the long rules;
+     *      3.  remove the (A -> bc, A -> bC, A -> Bc) rules;
+     *      4.  remove the unit rules;
      *
      * @return                  new grammar
      */
