@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Node {
+public class Node implements Comparable<Node> {
 
     private Type type;
     private Terminal terminal;
@@ -44,6 +44,16 @@ public class Node {
         this.children = children;
     }
 
+    public Node copy() {
+        if (terminal != null)
+            return new Node(terminal);
+
+        Node result = new Node(type);
+        children.forEach(child -> result.children.add(child.copy()));
+
+        return result;
+    }
+
     @Override
     public String toString() {
         if (terminal != null)
@@ -52,5 +62,21 @@ public class Node {
         return children.stream()
                 .map(Object::toString)
                 .collect(Collectors.joining(" "));
+    }
+
+    @Override
+    public int hashCode() {
+        return toString().hashCode();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj != null && obj instanceof Node && toString().equals(obj.toString());
+
+    }
+
+    @Override
+    public int compareTo(Node o) {
+        return toString().compareTo(o.toString());
     }
 }

@@ -3,7 +3,7 @@ package ru.nsu.fit.g14203.popov.converter.optimisation;
 import ru.nsu.fit.g14203.popov.parse.Node;
 
 @FunctionalInterface
-public interface Optimisation {
+public interface Transformation {
 
     /**
      * Performs optimisation on node. Old reference may become invalid after that operation.

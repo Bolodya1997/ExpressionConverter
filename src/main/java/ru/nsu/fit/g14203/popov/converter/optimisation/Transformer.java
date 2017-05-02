@@ -8,18 +8,18 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Optimiser {
+public class Transformer {
 
-    private List<Optimisation> optimisations = new ArrayList<>();
+    private List<Transformation> transformations = new ArrayList<>();
 
-    public Optimiser() { }
+    public Transformer() { }
 
-    public Optimiser(Collection<Optimisation> optimisations) {
-        this.optimisations.addAll(optimisations);
+    public Transformer(Collection<Transformation> transformations) {
+        this.transformations.addAll(transformations);
     }
 
-    public void addOptimisation(Optimisation optimisation) {
-        optimisations.add(optimisation);
+    public void addOptimisation(Transformation transformation) {
+        transformations.add(transformation);
     }
 
     /**
@@ -30,12 +30,12 @@ public class Optimiser {
      * @param tree                  tree to be optimised
      * @return                      new tree to replace old
      */
-    public ParseTree optimise(ParseTree tree) {
+    public ParseTree transform(ParseTree tree) {
         boolean[] changed = { false };
 
         Node root = tree.getRoot();
-        for (Optimisation optimisation : optimisations) {
-            root = optimise(root, optimisation, changed);
+        for (Transformation transformation : transformations) {
+            root = transform(root, transformation, changed);
         }
 
         if (changed[0])
@@ -43,14 +43,14 @@ public class Optimiser {
         return tree;
     }
 
-    private Node optimise(Node node, Optimisation optimisation, boolean[] changed) {
+    private Node transform(Node node, Transformation transformation, boolean[] changed) {
         List<Node> children = node.getChildren().stream()
-                .map(child -> optimise(child, optimisation, changed))
+                .map(child -> transform(child, transformation, changed))
                 .collect(Collectors.toList());
         children.forEach(child -> child.setParent(node));
         node.setChildren(children);
 
-        Node result = optimisation.perform(node);
+        Node result = transformation.perform(node);
         if (result != node)
             changed[0] = true;
 

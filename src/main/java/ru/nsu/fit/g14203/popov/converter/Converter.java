@@ -1,12 +1,10 @@
 package ru.nsu.fit.g14203.popov.converter;
 
-import ru.nsu.fit.g14203.popov.converter.logic.DeMorganOptimisation;
-import ru.nsu.fit.g14203.popov.converter.logic.NotNotOptimisation;
-import ru.nsu.fit.g14203.popov.converter.logic.SimpleBracketsOptimisation;
-import ru.nsu.fit.g14203.popov.converter.logic.TrueFalseOptimisation;
+import ru.nsu.fit.g14203.popov.converter.logic.*;
+import ru.nsu.fit.g14203.popov.converter.logic.innerview.InnerViewTransformer;
 import ru.nsu.fit.g14203.popov.converter.logic.nonterminal.*;
-import ru.nsu.fit.g14203.popov.converter.optimisation.Optimisation;
-import ru.nsu.fit.g14203.popov.converter.optimisation.Optimiser;
+import ru.nsu.fit.g14203.popov.converter.optimisation.Transformation;
+import ru.nsu.fit.g14203.popov.converter.optimisation.Transformer;
 import ru.nsu.fit.g14203.popov.parse.Grammar;
 import ru.nsu.fit.g14203.popov.parse.ParseTree;
 import ru.nsu.fit.g14203.popov.parse.TerminalParser;
@@ -41,12 +39,15 @@ public class Converter {
         nonTerminalTypes.add(new Primary());
     }
 
-    private List<Optimisation> optimisations = new ArrayList<>();
+    private List<Transformation> transformations = new ArrayList<>();
     {
-        optimisations.add(new TrueFalseOptimisation());
-        optimisations.add(new SimpleBracketsOptimisation());
-        optimisations.add(new DeMorganOptimisation());
-        optimisations.add(new NotNotOptimisation());
+        transformations.add(new TrueFalseTransformation());
+        transformations.add(new BracketTransformation());
+        transformations.add(new DeMorganTransformation());
+        transformations.add(new NotNotTransformation());
+        transformations.add(new ChainTransformation());
+        transformations.add(new SameTransformation());
+        transformations.add(new OrAndBracketTransformation());
     }
 
     public Converter(Reader input, Writer output) throws IOException {
@@ -59,15 +60,17 @@ public class Converter {
 
         ParseTree tree = new ParseTree(grammar, word);
 
-        Optimiser optimiser = new Optimiser(optimisations);
-        optimiser.addOptimisation(new TrueFalseOptimisation());
+        InnerViewTransformer innerViewTransformer = new InnerViewTransformer();
+        tree = innerViewTransformer.transform(tree);
 
-        ParseTree optimised = optimiser.optimise(tree);
-        while (optimised != tree) {
-            tree = optimised;
-            optimised = optimiser.optimise(tree);
+        Transformer transformer = new Transformer(transformations);
+
+        ParseTree transformed = transformer.transform(tree);
+        while (transformed != tree) {
+            tree = transformed;
+            transformed = transformer.transform(tree);
         }
 
-        optimised.print();
+        tree.print();
     }
 }
