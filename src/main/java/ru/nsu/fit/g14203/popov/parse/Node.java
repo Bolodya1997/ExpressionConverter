@@ -24,9 +24,7 @@ public class Node implements Comparable<Node> {
         this.terminal = terminal;
     }
 
-    public Type getType() {
-        return type;
-    }
+//    ------   positioning in tree   ------
 
     public Node getParent() {
         return parent;
@@ -44,14 +42,20 @@ public class Node implements Comparable<Node> {
         this.children = children;
     }
 
+//    ------   util   ------
+
+    public Type getType() {
+        return type;
+    }
+
     public Node copy() {
         if (terminal != null)
             return new Node(terminal);
 
-        Node result = new Node(type);
-        children.forEach(child -> result.children.add(child.copy()));
+        Node copy = new Node(type);
+        children.forEach(child -> copy.children.add(child.copy()));
 
-        return result;
+        return copy;
     }
 
     @Override
@@ -72,7 +76,6 @@ public class Node implements Comparable<Node> {
     @Override
     public boolean equals(Object obj) {
         return obj != null && obj instanceof Node && toString().equals(obj.toString());
-
     }
 
     @Override

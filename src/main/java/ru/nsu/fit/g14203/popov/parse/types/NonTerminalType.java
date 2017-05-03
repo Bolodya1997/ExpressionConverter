@@ -1,9 +1,41 @@
 package ru.nsu.fit.g14203.popov.parse.types;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 public class NonTerminalType extends Type {
 
+    /*
+     * Need to fix problem with recursive constructor calls in rules definition:
+     *      new NTa() -> new NTb(), new NTc()
+     *      new NTb() -> new NTc()
+     *      new NTc() -> new NTa()
+     *
+     * Replace it with:
+     *      new NTa() -> BASE_INSTANCES.get(NTb.class), BASE_INSTANCES.get(NTc.class)
+     *      new NTb() -> BASE_INSTANCES.get(NTc.class)
+     *      new NTc() -> BASE_INSTANCES.get(NTa.class)
+     *
+     * Now we need to call constructor for every <? extends NonTerminalType> before using it
+     * and update rules for BASE_INSTANCES.get(NT.class) in NT constructor, because it would
+     * be filled with null references for each <? extends NonTerminalType> which constructor
+     * was called first time only after NT constructor first invocation.
+     */
+    protected final static Map<Class<? extends Type>, Type> BASE_INSTANCES = new HashMap<>();
+    {
+        if (getClass() != NonTerminalType.class && !BASE_INSTANCES.containsKey(getClass()))
+            BASE_INSTANCES.put(getClass(), this);
+    }
+
+    /*
+     * Chomsky normal form needs to add a lot of temporary non-terminals that must be removed
+     * from the parse tree when it was built.
+     *
+     * For every <? extends NonTerminalType> instance:
+     *      instance is not temporary           uuid = NOT_TEMP;
+     *      instance is temporary               uuid = UUID.randomUUID();
+     */
     private final static UUID NOT_TEMP = new UUID(0, 0);
 
     protected Type[][] rules;
@@ -13,12 +45,12 @@ public class NonTerminalType extends Type {
         return new NonTerminalType(rules, UUID.randomUUID());
     }
 
+    protected NonTerminalType() {}
+
     private NonTerminalType(Type[][] rules, UUID uuid) {
         this.rules = rules;
         this.uuid = uuid;
     }
-
-    protected NonTerminalType() {}
 
     public Type[][] getRules() {
         return rules;

@@ -2,8 +2,8 @@ package ru.nsu.fit.g14203.popov.parse.types;
 
 public class Terminal {
 
-    private TerminalType type;
-    private String value;
+    private final TerminalType type;
+    private final String value;
 
     public Terminal(TerminalType type, String value) {
         this.type = type;

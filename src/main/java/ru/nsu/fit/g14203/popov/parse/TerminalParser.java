@@ -3,27 +3,29 @@ package ru.nsu.fit.g14203.popov.parse;
 import ru.nsu.fit.g14203.popov.parse.types.Terminal;
 import ru.nsu.fit.g14203.popov.parse.types.TerminalType;
 
-import java.io.Closeable;
-import java.io.IOException;
-import java.io.Reader;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 
-public class TerminalParser {
+final class TerminalParser {
 
-    private TerminalType[] types;
+    /**
+     * Parses input string into array of terminals of given types.
+     *
+     * @param types                 acceptable types for output terminals
+     * @param string                string to parse
+     * @return                      array of terminals
+     *
+     * @throws ParseException       if string contains fragment which is not correct for any
+     *                              of given types
+     */
+    static Terminal[] parseString(TerminalType[] types, String string) throws ParseException {
+        String modified = string;
+        for (TerminalType type : types) {
+            String toReplace = type.getDefaultValue();
+            modified = modified.replace(toReplace, String.format(" %s ", toReplace));
+        }
 
-    public TerminalParser(TerminalType[] types) {
-        this.types = types;
-    }
-
-    public Terminal[] parseString(String string) throws ParseException {
-        String[] words = Arrays.stream(string
-                .replace("(", " ( ")
-                .replace(")", " ) ")
+        String[] words = Arrays.stream(modified
                 .split(" "))
                 .filter(s -> !s.isEmpty())
                 .toArray(String[]::new);
@@ -31,11 +33,13 @@ public class TerminalParser {
         Stream.Builder<Terminal> terminals = Stream.builder();
         for (String word : words) {
             TerminalType type = Arrays.stream(types)
-                    .filter(terminalType -> terminalType.isInstance(word))
+                    .filter(terminalType -> terminalType.isCorrect(word))
                     .findAny().orElse(null);
 
-            if (type == null)
-                throw new ParseException(String.format("Cannot parse input fragment: %s\n", word));
+            if (type == null) {
+                int position = string.indexOf(word);
+                throw new ParseException(string, position, ParseException.Reason.PARSE);
+            }
 
             terminals.add(new Terminal(type, word));
         }

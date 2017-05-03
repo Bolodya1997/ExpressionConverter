@@ -8,19 +8,18 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Grammar {
+class Grammar {
 
-    private Comparator<NonTerminalType> startComparator;
+    private final Comparator<NonTerminalType> startComparator;
 
-    private TerminalType[] terminals;
-    private NonTerminalType[] nonTerminals;
+    private final TerminalType[] terminalTypes;
+    private final NonTerminalType[] nonTerminals;
 
     /**
-     * For every class extends NonTerminalType replace every its instance in NonTerminalType::rules
-     * with single one.
+     * For every NonTerminalType of same class replaces it with one instance for all rules.
      *
-     * @param nonTerminals      list of non-terminals
-     * @return                  new list
+     * @param nonTerminals          list of rules
+     * @return                      new list of rules
      */
     private static List<NonTerminalType> reduceNonTerminals(List<NonTerminalType> nonTerminals) {
         Map<NonTerminalType, NonTerminalType> types = new HashMap<>();
@@ -54,17 +53,17 @@ public class Grammar {
     /**
      * Creates context free grammar by list of rules and start non-terminal.
      *
-     * @param nonTerminals      list of rules
-     * @param start             start non-terminal
+     * @param nonTerminals          list of rules
+     * @param start                 start non-terminal
      */
-    public Grammar(List<NonTerminalType> nonTerminals, NonTerminalType start) {
+    Grammar(List<NonTerminalType> nonTerminals, NonTerminalType start) {
         startComparator = (nt1, nt2) -> nt1.equals(start) ? -1 : nt2.equals(start) ? 1 : 0;
 
         this.nonTerminals = reduceNonTerminals(nonTerminals).stream()
                 .sorted(startComparator)
                 .toArray(NonTerminalType[]::new);
 
-        terminals = nonTerminals.stream()
+        terminalTypes = nonTerminals.stream()
                 .flatMap(nonTerminal -> Arrays.stream(nonTerminal.getRules()))
                 .flatMap(Arrays::stream)
                 .distinct()
@@ -80,9 +79,9 @@ public class Grammar {
      *      3.  remove the (A -> bc, A -> bC, A -> Bc) rules;
      *      4.  remove the unit rules;
      *
-     * @return                  new grammar
+     * @return                      new grammar equivalent this in Chomsky normal form
      */
-    public Grammar normalize() {
+    Grammar normalize() {
         List<NonTerminalType> normNonTerminals = reduceNonTerminals(Arrays.stream(nonTerminals)
                 .collect(Collectors.toList()));
         normNonTerminals.sort(startComparator);
@@ -162,20 +161,21 @@ public class Grammar {
                 .toArray(Type[][]::new);
     }
 
-    public TerminalType[] getTerminals() {
-        return terminals;
+    TerminalType[] getTerminalTypes() {
+        return terminalTypes;
     }
 
-    public NonTerminalType[] getNonTerminals() {
+    NonTerminalType[] getNonTerminals() {
         return nonTerminals;
     }
 
-    public void print() {
-        System.out.printf("Terminals:\n\t%s\n\n", Arrays.stream(terminals)
+    @Override
+    public String toString() {
+        String __terminalTypes = String.format("Terminal types:\n\t%s\n\n", Arrays.stream(terminalTypes)
                 .map(Type::toString)
                 .collect(Collectors.joining("\n\t")));
 
-        System.out.printf("%s\n\n\n", Arrays.stream(nonTerminals)
+        String __nonTerminals = String.format("%s\n\n\n", Arrays.stream(nonTerminals)
                 .map(nonTerminal -> nonTerminal.toString() + "\n\t->\t" +
                         Arrays.stream(nonTerminal.getRules())
                                 .map(Arrays::stream)
@@ -184,5 +184,7 @@ public class Grammar {
                                         .collect(Collectors.joining(" ")))
                                 .collect(Collectors.joining("\n\t->\t")))
                 .collect(Collectors.joining("\n")));
+
+        return __terminalTypes + __nonTerminals;
     }
 }
