@@ -171,9 +171,10 @@ class Grammar {
 
     @Override
     public String toString() {
-        String __terminalTypes = String.format("Terminal types:\n\t%s\n\n", Arrays.stream(terminalTypes)
-                .map(Type::toString)
-                .collect(Collectors.joining("\n\t")));
+        String __terminalTypes = String.format("Terminal types:\n\t%s\n\n",
+                Arrays.stream(terminalTypes)
+                        .map(Type::toString)
+                        .collect(Collectors.joining("\n\t")));
 
         String __nonTerminals = String.format("%s\n\n\n", Arrays.stream(nonTerminals)
                 .map(nonTerminal -> nonTerminal.toString() + "\n\t->\t" +

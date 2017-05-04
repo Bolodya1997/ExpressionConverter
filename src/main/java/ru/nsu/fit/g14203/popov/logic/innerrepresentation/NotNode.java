@@ -1,8 +1,11 @@
 package ru.nsu.fit.g14203.popov.logic.innerrepresentation;
 
+import ru.nsu.fit.g14203.popov.logic.terminal.Not;
 import ru.nsu.fit.g14203.popov.parse.Node;
 
 public class NotNode extends Node {
+
+    private final static String NOT = new Not().getDefaultValue();
 
     public NotNode() {
         super(new InnerType());
@@ -17,7 +20,7 @@ public class NotNode extends Node {
     }
 
     @Override
-    public String toString() {  //  TODO: replace "NOT"
-        return String.format("NOT %s", super.toString());
+    public String toString() {
+        return String.format("%s %s", NOT, super.toString());
     }
 }

@@ -5,9 +5,11 @@ import ru.nsu.fit.g14203.popov.logic.innerrepresentation.ChainSingleTransformati
 import ru.nsu.fit.g14203.popov.logic.innerrepresentation.NotSingleTransformation;
 import ru.nsu.fit.g14203.popov.logic.nonterminal.*;
 import ru.nsu.fit.g14203.popov.logic.transformations.*;
+import ru.nsu.fit.g14203.popov.parse.ParseException;
 import ru.nsu.fit.g14203.popov.parse.Simplifier;
 import ru.nsu.fit.g14203.popov.parse.Transformation;
 import ru.nsu.fit.g14203.popov.parse.types.NonTerminalType;
+import ru.nsu.fit.g14203.popov.parse.types.Terminal;
 
 import java.util.Collection;
 import java.util.stream.Collectors;
@@ -31,6 +33,12 @@ public class LogicSimplifier extends Simplifier {
     @Override
     protected Class<? extends NonTerminalType> getStartNonTerminalClass() {
         return Expression.class;
+    }
+
+    @Override
+    protected void reportParseTreeError(String input, Terminal[] sequence, int position)
+            throws ParseException {
+        //  TODO: add method
     }
 
     @Override

@@ -36,21 +36,21 @@ public class TrueFalseTransformation implements Transformation {
         return node;
     }
 
-    private Node not(Node node) {   //  TODO: replace "TRUE", "FALSE"
+    private Node not(Node node) {
         if (node.getChildren().get(0).getType() instanceof True) {
-            Terminal __false = new Terminal(new False(), "FALSE");
-            return new Node(__false);
+            False __false = new False();
+            return new Node(new Terminal(__false, __false.getDefaultValue()));
         }
 
         if (node.getChildren().get(0).getType() instanceof False) {
-            Terminal __true = new Terminal(new True(), "TRUE");
-            return new Node(__true);
+            True __true = new True();
+            return new Node(new Terminal(__true, __true.getDefaultValue()));
         }
 
         return node;
     }
 
-    private Node and(Node node) {    //  TODO: replace "TRUE"
+    private Node and(Node node) {
         List<Node> children = node.getChildren();
 
         Node __false = children.stream()
@@ -63,8 +63,8 @@ public class TrueFalseTransformation implements Transformation {
                 .filter(child -> !(child.getType() instanceof True))
                 .collect(Collectors.toList());
         if (children.isEmpty()) {
-            Terminal __true = new Terminal(new True(), "TRUE");
-            return new Node(__true);
+            True __true = new True();
+            return new Node(new Terminal(__true, __true.getDefaultValue()));
         }
 
         if (node.getChildren().size() == children.size())
@@ -79,7 +79,7 @@ public class TrueFalseTransformation implements Transformation {
         return node;
     }
 
-    private Node or(Node node) {    //  TODO: replace "FALSE"
+    private Node or(Node node) {
         List<Node> children = node.getChildren();
 
         Node __true = children.stream()
@@ -92,8 +92,8 @@ public class TrueFalseTransformation implements Transformation {
                 .filter(child -> !(child.getType() instanceof False))
                 .collect(Collectors.toList());
         if (children.isEmpty()) {
-            Terminal __false = new Terminal(new False(), "FALSE");
-            return new Node(__false);
+            False __false = new False();
+            return new Node(new Terminal(__false, __false.getDefaultValue()));
         }
 
         if (node.getChildren().size() == children.size())

@@ -1,8 +1,13 @@
 package ru.nsu.fit.g14203.popov.logic.innerrepresentation;
 
+import ru.nsu.fit.g14203.popov.logic.terminal.CloseBracket;
+import ru.nsu.fit.g14203.popov.logic.terminal.OpenBracket;
 import ru.nsu.fit.g14203.popov.parse.Node;
 
 public class BracketNode extends Node {
+
+    private final static String OPEN_BRACKET    = new OpenBracket().getDefaultValue();
+    private final static String CLOSE_BRACKET   = new CloseBracket().getDefaultValue();
 
     public BracketNode() {
         super(new InnerType());
@@ -17,7 +22,7 @@ public class BracketNode extends Node {
     }
 
     @Override
-    public String toString() {  //  TODO: replace "(", ")"
-        return String.format("(%s)", super.toString());
+    public String toString() {
+        return String.format("%s%s%s", OPEN_BRACKET, super.toString(), CLOSE_BRACKET);
     }
 }

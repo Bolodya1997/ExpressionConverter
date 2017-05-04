@@ -11,7 +11,7 @@ import java.util.*;
  * Parametrised by:
  *      - list of rules defining grammar
  *      - start non-terminal for derivation
- *      - list of one time transformations for parse tree (can be used to change grammar to equivalent one)
+ *      - list of one time transformations for parse tree
  *      - list of transformations
  */
 public abstract class Simplifier {
@@ -25,20 +25,21 @@ public abstract class Simplifier {
     protected abstract Class<? extends NonTerminalType>[] getNonTerminalClasses();
 
     /**
-     * @return                  class of start non-terminal (must be one of all NonTerminal classes)
+     * @return                  class of start non-terminal (must be one of NonTerminal classes)
      */
     protected abstract Class<? extends NonTerminalType> getStartNonTerminalClass();
 
     private final List<NonTerminalType> nonTerminals = new ArrayList<>();
     private final NonTerminalType startNonTerminal;
     {
+        Class<? extends NonTerminalType>[] nonTerminalClasses = getNonTerminalClasses();
         try {
 
-            for (Class<? extends NonTerminalType> __class : getNonTerminalClasses()) {
+            for (Class<? extends NonTerminalType> __class : nonTerminalClasses) {
                 __class.newInstance();
             }
 
-            for (Class<? extends NonTerminalType> __class : getNonTerminalClasses()) {
+            for (Class<? extends NonTerminalType> __class : nonTerminalClasses) {
                 nonTerminals.add(__class.newInstance());
             }
 
@@ -49,12 +50,16 @@ public abstract class Simplifier {
         }
     }
 
+    protected abstract void reportParseTreeError(String input, Terminal[] sequence, int position)
+            throws ParseException;
+
     /**
      * @return                  transformations need to be performed one time before all others
      */
     protected abstract Collection<Transformation> getSingleTimeTransformations();
 
-    private final Collection<Transformation> singleTimeTransformations = getSingleTimeTransformations();
+    private final Collection<Transformation> singleTimeTransformations =
+            getSingleTimeTransformations();
 
     /**
      * @return                  transformations should be performed while tree is changing
@@ -69,7 +74,7 @@ public abstract class Simplifier {
     public final String simplify(String input) throws ParseException {
         Terminal[] sequence = TerminalParser.parseString(terminalTypes, input);
 
-        ParseTree tree = new ParseTree(grammar, sequence);
+        ParseTree tree = new ParseTree(grammar, sequence);  //  TODO: add new exception
         tree = Transformer.transform(tree, singleTimeTransformations);
 
         ParseTree simplified = Transformer.transform(tree, transformations);

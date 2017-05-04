@@ -6,6 +6,7 @@ import ru.nsu.fit.g14203.popov.parse.types.Type;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class Node implements Comparable<Node> {
 
@@ -24,6 +25,24 @@ public class Node implements Comparable<Node> {
         this.terminal = terminal;
     }
 
+//    ------   error recovery   ------
+
+    private int weight;
+
+    Node setWeight(int weight) {
+        this.weight = weight;
+
+        return this;
+    }
+
+    int getWeight() {
+        int childrenWeight = children.stream()
+                .mapToInt(Node::getWeight)
+                .sum();
+
+        return weight + childrenWeight;
+    }
+
 //    ------   positioning in tree   ------
 
     public Node getParent() {
@@ -40,6 +59,13 @@ public class Node implements Comparable<Node> {
 
     public void setChildren(List<Node> children) {
         this.children = children;
+    }
+
+    Stream<Node> getLeaves() {
+        if (children.size() <= 1)
+            return Stream.of(this);
+        return children.stream()
+                .flatMap(Node::getLeaves);
     }
 
 //    ------   util   ------

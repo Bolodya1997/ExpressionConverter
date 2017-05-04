@@ -1,10 +1,13 @@
 package ru.nsu.fit.g14203.popov.logic.innerrepresentation;
 
+import ru.nsu.fit.g14203.popov.logic.terminal.And;
 import ru.nsu.fit.g14203.popov.parse.Node;
 
 import java.util.stream.Collectors;
 
 public class AndChainNode extends Node {
+
+    private static final String AND = new And().getDefaultValue();
 
     public AndChainNode() {
         super(new InnerType());
@@ -19,9 +22,9 @@ public class AndChainNode extends Node {
     }
 
     @Override
-    public String toString() {  //  TODO: replace "AND"
+    public String toString() {
         return getChildren().stream()
                 .map(Node::toString)
-                .collect(Collectors.joining(" AND "));
+                .collect(Collectors.joining(String.format(" %s ", AND)));
     }
 }
