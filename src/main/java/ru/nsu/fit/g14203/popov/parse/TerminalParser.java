@@ -37,8 +37,8 @@ final class TerminalParser {
                     .findAny().orElse(null);
 
             if (type == null) {
-                int position = string.indexOf(word);
-                throw new ParseException(string, position, ParseException.Reason.PARSE);
+                int pos = string.indexOf(word);
+                throw new ParseException(string, pos, 1, "Cannot parse input fragment");
             }
 
             terminals.add(new Terminal(type, word));

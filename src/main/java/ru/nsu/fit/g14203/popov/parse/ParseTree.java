@@ -13,6 +13,14 @@ import java.util.stream.Stream;
 
 class ParseTree {
 
+    class TreeException extends Exception {
+        int position;
+
+        TreeException(int position) {
+            this.position = position;
+        }
+    }
+
     private Node root;
 
     ParseTree(Node root) {
@@ -28,9 +36,9 @@ class ParseTree {
      * @param grammar               context-free grammar to define the language
      * @param sequence              terminal sequence
      *
-     * @throws ParseException       if sequence doesn't contain in defined language
+     * @throws TreeException        if sequence is can't be parsed, with position at first error
      */
-    ParseTree(Grammar grammar, Terminal[] sequence) throws ParseException {
+    ParseTree(Grammar grammar, Terminal[] sequence) throws TreeException {
         NonTerminalType[] nonTerminals = grammar.getNonTerminals();
 
         buildTree(nonTerminals, sequence);  //  build tree in normalized grammar
@@ -39,9 +47,9 @@ class ParseTree {
     }
 
     private void buildTree(NonTerminalType[] nonTerminals, Terminal[] sequence)
-            throws ParseException {
+            throws TreeException {
         if (sequence.length == 0)
-            throw new ParseException("Bad sequence", 0, ParseException.Reason.TREE);
+            throw new TreeException(-1);
 
         Node[] terminals = Arrays.stream(sequence)
                 .map(Node::new)
@@ -165,7 +173,7 @@ ntLoop:         for (int nt = 0; nt < nonTerminals.length; nt++) {
         for (int i = 0; i < leaves.length; i++) {
             Node leaf = leaves[i];
             if (leaf.getWeight() != 0)
-                throw new ParseException(leaf.toString(), i, ParseException.Reason.TREE);
+                throw new TreeException(i);
         }
     }
 

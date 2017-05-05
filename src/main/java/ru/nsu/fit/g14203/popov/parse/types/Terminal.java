@@ -14,7 +14,8 @@ public class Terminal {
         return type;
     }
 
-    public String getValue() {
+    @Override
+    public String toString() {
         return value;
     }
 }

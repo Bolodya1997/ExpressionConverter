@@ -1,6 +1,6 @@
 package ru.nsu.fit.g14203.popov.logic.nonterminal;
 
-import ru.nsu.fit.g14203.popov.logic.terminal.Literal;
+import ru.nsu.fit.g14203.popov.logic.terminal.Variable;
 import ru.nsu.fit.g14203.popov.parse.types.NonTerminalType;
 import ru.nsu.fit.g14203.popov.parse.types.Type;
 
@@ -12,7 +12,7 @@ public final class Identifier extends NonTerminalType {
             return;
 
         rules = new Type[][]{
-                { new Literal() }
+                { new Variable() }
         };
 
         identifier.rules = rules;

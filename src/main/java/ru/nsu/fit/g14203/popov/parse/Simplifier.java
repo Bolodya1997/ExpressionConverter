@@ -50,8 +50,16 @@ public abstract class Simplifier {
         }
     }
 
-    protected abstract void reportParseTreeError(String input, Terminal[] sequence, int position)
-            throws ParseException;
+    /**
+     * Invokes when the input string cannot be transformed into the parse tree.
+     *
+     * @param input             input string
+     * @param sequence          terminal sequence of input string
+     * @param position          position of first error
+     * @return                  exception to rise
+     */
+    protected abstract ParseException reportParseTreeError(String input, Terminal[] sequence,
+                                                           int position);
 
     /**
      * @return                  transformations need to be performed one time before all others
@@ -74,7 +82,12 @@ public abstract class Simplifier {
     public final String simplify(String input) throws ParseException {
         Terminal[] sequence = TerminalParser.parseString(terminalTypes, input);
 
-        ParseTree tree = new ParseTree(grammar, sequence);  //  TODO: add new exception
+        ParseTree tree;
+        try {
+            tree = new ParseTree(grammar, sequence);
+        } catch (ParseTree.TreeException e) {
+            throw reportParseTreeError(input, sequence, e.position);
+        }
         tree = Transformer.transform(tree, singleTimeTransformations);
 
         ParseTree simplified = Transformer.transform(tree, transformations);

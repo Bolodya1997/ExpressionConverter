@@ -86,13 +86,13 @@ class Grammar {
                 .collect(Collectors.toList()));
         normNonTerminals.sort(startComparator);
 
-//        1
+        //  1
         NonTerminalType normStart = NonTerminalType.getTemp(new Type[][]{
                 { normNonTerminals.get(0) }     //  old start non-terminal
         });
         normNonTerminals.add(normStart);
 
-//        2
+        //  2
         for (int i = 0; i < normNonTerminals.size(); i++) {
             NonTerminalType nonTerminal = normNonTerminals.get(i);
             Type[][] rules = Arrays.stream(nonTerminal.getRules())
@@ -102,7 +102,7 @@ class Grammar {
             nonTerminal.setRules(rules);
         }
 
-//        3
+        //  3
         for (int i = 0; i < normNonTerminals.size(); i++) {
             NonTerminalType nonTerminal = normNonTerminals.get(i);
             Type[][] rules = Arrays.stream(nonTerminal.getRules())
@@ -112,7 +112,7 @@ class Grammar {
             nonTerminal.setRules(rules);
         }
 
-//        4
+        //  4
         normNonTerminals.forEach(nonTerminal -> {
             Type[][] rules = Arrays.stream(nonTerminal.getRules())
                     .flatMap(rule -> Arrays.stream(removeUniqueRule(rule)))

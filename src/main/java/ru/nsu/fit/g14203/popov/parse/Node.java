@@ -87,7 +87,7 @@ public class Node implements Comparable<Node> {
     @Override
     public String toString() {
         if (terminal != null)
-            return terminal.getValue();
+            return terminal.toString();
 
         return children.stream()
                 .map(Object::toString)
